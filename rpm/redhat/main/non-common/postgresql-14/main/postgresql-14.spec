@@ -7,7 +7,11 @@
 %global sname postgresql
 %global pgbaseinstdir	/usr/pgsql-%{pgmajorversion}
 
+%if 0%{?beta}
+%global beta 1
+%else
 %global beta 0
+%endif
 %{?beta:%global __os_install_post /usr/lib/rpm/brp-compress}
 
 # Macros that define the configure parameters:
@@ -83,11 +87,11 @@
 Summary:	PostgreSQL client programs and libraries
 Name:		%{sname}%{pgmajorversion}
 Version:	14.4
-Release:	2PGDG%{?dist}
+Release:	orioledb
 License:	PostgreSQL
 Url:		https://www.postgresql.org/
 
-Source0:	https://download.postgresql.org/pub/source/v%{version}/postgresql-%{version}.tar.bz2
+Source0:	orioledb.tar.gz
 Source4:	%{sname}-%{pgmajorversion}-Makefile.regress
 Source5:	%{sname}-%{pgmajorversion}-pg_config.h
 Source6:	%{sname}-%{pgmajorversion}-README-systemd.rpm-dist
@@ -354,16 +358,16 @@ The postgresql%{pgmajorversion}-server package contains the programs needed to c
 and run a PostgreSQL server, which will in turn allow you to create
 and maintain PostgreSQL databases.
 
-%package docs
-Summary:	Extra documentation for PostgreSQL
-Provides:	postgresql-docs >= %{version}-%{release}
+#%package docs
+#Summary:	Extra documentation for PostgreSQL
+#Provides:	postgresql-docs >= %{version}-%{release}
 
-%description docs
-The postgresql%{pgmajorversion}-docs package includes the SGML source for the documentation
-as well as the documentation in PDF format and some extra documentation.
-Install this package if you want to help with the PostgreSQL documentation
-project, or if you want to generate printed documentation. This package also
-includes HTML version of the documentation.
+#%description docs
+#The postgresql%{pgmajorversion}-docs package includes the SGML source for the documentation
+#as well as the documentation in PDF format and some extra documentation.
+#Install this package if you want to help with the PostgreSQL documentation
+#project, or if you want to generate printed documentation. This package also
+#includes HTML version of the documentation.
 
 %package contrib
 Summary:	Contributed source and binaries distributed with PostgreSQL
@@ -579,7 +583,7 @@ benchmarks.
 %endif
 
 %prep
-%setup -q -n %{sname}-%{version}
+%setup -q -c -n %{sname}-%{version}
 
 %patch1 -p0
 %patch3 -p0
@@ -876,12 +880,12 @@ touch -r %{SOURCE10} %{sname}-%{pgmajorversion}-check-db-dir
 
 # Fix some more documentation
 # gzip doc/internals.ps
-%{__cp} %{SOURCE6} README.rpm-dist
-%{__mkdir} -p %{buildroot}%{pgbaseinstdir}/share/doc/html
-%{__mv} doc/src/sgml/html doc
-%{__mkdir} -p %{buildroot}%{pgbaseinstdir}/share/man/
-%{__mv} doc/src/sgml/man1 doc/src/sgml/man3 doc/src/sgml/man7 %{buildroot}%{pgbaseinstdir}/share/man/
-%{__rm} -rf %{buildroot}%{_docdir}/pgsql
+#%{__cp} %{SOURCE6} README.rpm-dist
+#%{__mkdir} -p %{buildroot}%{pgbaseinstdir}/share/doc/html
+#%{__mv} doc/src/sgml/html doc
+#%{__mkdir} -p %{buildroot}%{pgbaseinstdir}/share/man/
+#%{__mv} doc/src/sgml/man1 doc/src/sgml/man3 doc/src/sgml/man7 %{buildroot}%{pgbaseinstdir}/share/man/
+#%{__rm} -rf %{buildroot}%{_docdir}/pgsql
 
 # These file(s) should not be packaged:
 %{__rm} %{buildroot}%{pgbaseinstdir}/lib/libpgfeutils.a
@@ -1011,18 +1015,18 @@ fi
 %{_sbindir}/update-alternatives --install %{_bindir}/pg_restore pgsql-pg_restore %{pgbaseinstdir}/bin/pg_restore %{packageversion}0
 %{_sbindir}/update-alternatives --install %{_bindir}/reindexdb pgsql-reindexdb %{pgbaseinstdir}/bin/reindexdb %{packageversion}0
 %{_sbindir}/update-alternatives --install %{_bindir}/vacuumdb pgsql-vacuumdb %{pgbaseinstdir}/bin/vacuumdb %{packageversion}0
-%{_sbindir}/update-alternatives --install %{_mandir}/man1/clusterdb.1 pgsql-clusterdbman %{pgbaseinstdir}/share/man/man1/clusterdb.1 %{packageversion}0
-%{_sbindir}/update-alternatives --install %{_mandir}/man1/createdb.1 pgsql-createdbman %{pgbaseinstdir}/share/man/man1/createdb.1 %{packageversion}0
-%{_sbindir}/update-alternatives --install %{_mandir}/man1/createuser.1 pgsql-createuserman %{pgbaseinstdir}/share/man/man1/createuser.1 %{packageversion}0
-%{_sbindir}/update-alternatives --install %{_mandir}/man1/dropdb.1 pgsql-dropdbman %{pgbaseinstdir}/share/man/man1/dropdb.1 %{packageversion}0
-%{_sbindir}/update-alternatives --install %{_mandir}/man1/dropuser.1 pgsql-dropuserman %{pgbaseinstdir}/share/man/man1/dropuser.1 %{packageversion}0
-%{_sbindir}/update-alternatives --install %{_mandir}/man1/pg_basebackup.1 pgsql-pg_basebackupman %{pgbaseinstdir}/share/man/man1/pg_basebackup.1 %{packageversion}0
-%{_sbindir}/update-alternatives --install %{_mandir}/man1/pg_dump.1 pgsql-pg_dumpman %{pgbaseinstdir}/share/man/man1/pg_dump.1 %{packageversion}0
-%{_sbindir}/update-alternatives --install %{_mandir}/man1/pg_dumpall.1 pgsql-pg_dumpallman %{pgbaseinstdir}/share/man/man1/pg_dumpall.1 %{packageversion}0
-%{_sbindir}/update-alternatives --install %{_mandir}/man1/pg_restore.1 pgsql-pg_restoreman %{pgbaseinstdir}/share/man/man1/pg_restore.1 %{packageversion}0
-%{_sbindir}/update-alternatives --install %{_mandir}/man1/psql.1 pgsql-psqlman %{pgbaseinstdir}/share/man/man1/psql.1 %{packageversion}0
-%{_sbindir}/update-alternatives --install %{_mandir}/man1/reindexdb.1 pgsql-reindexdbman %{pgbaseinstdir}/share/man/man1/reindexdb.1 %{packageversion}0
-%{_sbindir}/update-alternatives --install %{_mandir}/man1/vacuumdb.1 pgsql-vacuumdbman %{pgbaseinstdir}/share/man/man1/vacuumdb.1 %{packageversion}0
+#%{_sbindir}/update-alternatives --install %{_mandir}/man1/clusterdb.1 pgsql-clusterdbman %{pgbaseinstdir}/share/man/man1/clusterdb.1 %{packageversion}0
+#%{_sbindir}/update-alternatives --install %{_mandir}/man1/createdb.1 pgsql-createdbman %{pgbaseinstdir}/share/man/man1/createdb.1 %{packageversion}0
+#%{_sbindir}/update-alternatives --install %{_mandir}/man1/createuser.1 pgsql-createuserman %{pgbaseinstdir}/share/man/man1/createuser.1 %{packageversion}0
+#%{_sbindir}/update-alternatives --install %{_mandir}/man1/dropdb.1 pgsql-dropdbman %{pgbaseinstdir}/share/man/man1/dropdb.1 %{packageversion}0
+#%{_sbindir}/update-alternatives --install %{_mandir}/man1/dropuser.1 pgsql-dropuserman %{pgbaseinstdir}/share/man/man1/dropuser.1 %{packageversion}0
+#%{_sbindir}/update-alternatives --install %{_mandir}/man1/pg_basebackup.1 pgsql-pg_basebackupman %{pgbaseinstdir}/share/man/man1/pg_basebackup.1 %{packageversion}0
+#%{_sbindir}/update-alternatives --install %{_mandir}/man1/pg_dump.1 pgsql-pg_dumpman %{pgbaseinstdir}/share/man/man1/pg_dump.1 %{packageversion}0
+#%{_sbindir}/update-alternatives --install %{_mandir}/man1/pg_dumpall.1 pgsql-pg_dumpallman %{pgbaseinstdir}/share/man/man1/pg_dumpall.1 %{packageversion}0
+#%{_sbindir}/update-alternatives --install %{_mandir}/man1/pg_restore.1 pgsql-pg_restoreman %{pgbaseinstdir}/share/man/man1/pg_restore.1 %{packageversion}0
+#%{_sbindir}/update-alternatives --install %{_mandir}/man1/psql.1 pgsql-psqlman %{pgbaseinstdir}/share/man/man1/psql.1 %{packageversion}0
+#%{_sbindir}/update-alternatives --install %{_mandir}/man1/reindexdb.1 pgsql-reindexdbman %{pgbaseinstdir}/share/man/man1/reindexdb.1 %{packageversion}0
+#%{_sbindir}/update-alternatives --install %{_mandir}/man1/vacuumdb.1 pgsql-vacuumdbman %{pgbaseinstdir}/share/man/man1/vacuumdb.1 %{packageversion}0
 
 %post libs
 %{_sbindir}/update-alternatives --install /etc/ld.so.conf.d/%{sname}-pgdg-libs.conf pgsql-ld-conf %{pgbaseinstdir}/share/%{sname}-%{pgmajorversion}-libs.conf %{packageversion}0
@@ -1035,28 +1039,28 @@ if [ "$1" -eq 0 ]
 	# Only remove these links if the package is completely removed from the system (vs.just being upgraded)
 	%{_sbindir}/update-alternatives --remove pgsql-psql		%{pgbaseinstdir}/bin/psql
 	%{_sbindir}/update-alternatives --remove pgsql-clusterdb	%{pgbaseinstdir}/bin/clusterdb
-	%{_sbindir}/update-alternatives --remove pgsql-clusterdbman	%{pgbaseinstdir}/share/man/man1/clusterdb.1
+#	%{_sbindir}/update-alternatives --remove pgsql-clusterdbman	%{pgbaseinstdir}/share/man/man1/clusterdb.1
 	%{_sbindir}/update-alternatives --remove pgsql-createdb		%{pgbaseinstdir}/bin/createdb
-	%{_sbindir}/update-alternatives --remove pgsql-createdbman	%{pgbaseinstdir}/share/man/man1/createdb.1
+#	%{_sbindir}/update-alternatives --remove pgsql-createdbman	%{pgbaseinstdir}/share/man/man1/createdb.1
 	%{_sbindir}/update-alternatives --remove pgsql-createuser	%{pgbaseinstdir}/bin/createuser
-	%{_sbindir}/update-alternatives --remove pgsql-createuserman	%{pgbaseinstdir}/share/man/man1/createuser.1
+#	%{_sbindir}/update-alternatives --remove pgsql-createuserman	%{pgbaseinstdir}/share/man/man1/createuser.1
 	%{_sbindir}/update-alternatives --remove pgsql-dropdb		%{pgbaseinstdir}/bin/dropdb
-	%{_sbindir}/update-alternatives --remove pgsql-dropdbman	%{pgbaseinstdir}/share/man/man1/dropdb.1
+#	%{_sbindir}/update-alternatives --remove pgsql-dropdbman	%{pgbaseinstdir}/share/man/man1/dropdb.1
 	%{_sbindir}/update-alternatives --remove pgsql-dropuser		%{pgbaseinstdir}/bin/dropuser
-	%{_sbindir}/update-alternatives --remove pgsql-dropuserman	%{pgbaseinstdir}/share/man/man1/dropuser.1
+#	%{_sbindir}/update-alternatives --remove pgsql-dropuserman	%{pgbaseinstdir}/share/man/man1/dropuser.1
 	%{_sbindir}/update-alternatives --remove pgsql-pg_basebackup	%{pgbaseinstdir}/bin/pg_basebackup
 	%{_sbindir}/update-alternatives --remove pgsql-pg_dump		%{pgbaseinstdir}/bin/pg_dump
 	%{_sbindir}/update-alternatives --remove pgsql-pg_dumpall	%{pgbaseinstdir}/bin/pg_dumpall
-	%{_sbindir}/update-alternatives --remove pgsql-pg_dumpallman	%{pgbaseinstdir}/share/man/man1/pg_dumpall.1
-	%{_sbindir}/update-alternatives --remove pgsql-pg_basebackupman	%{pgbaseinstdir}/share/man/man1/pg_basebackup.1
-	%{_sbindir}/update-alternatives --remove pgsql-pg_dumpman	%{pgbaseinstdir}/share/man/man1/pg_dump.1
+#	%{_sbindir}/update-alternatives --remove pgsql-pg_dumpallman	%{pgbaseinstdir}/share/man/man1/pg_dumpall.1
+#	%{_sbindir}/update-alternatives --remove pgsql-pg_basebackupman	%{pgbaseinstdir}/share/man/man1/pg_basebackup.1
+#	%{_sbindir}/update-alternatives --remove pgsql-pg_dumpman	%{pgbaseinstdir}/share/man/man1/pg_dump.1
 	%{_sbindir}/update-alternatives --remove pgsql-pg_restore	%{pgbaseinstdir}/bin/pg_restore
-	%{_sbindir}/update-alternatives --remove pgsql-pg_restoreman	%{pgbaseinstdir}/share/man/man1/pg_restore.1
-	%{_sbindir}/update-alternatives --remove pgsql-psqlman		%{pgbaseinstdir}/share/man/man1/psql.1
+#	%{_sbindir}/update-alternatives --remove pgsql-pg_restoreman	%{pgbaseinstdir}/share/man/man1/pg_restore.1
+#	%{_sbindir}/update-alternatives --remove pgsql-psqlman		%{pgbaseinstdir}/share/man/man1/psql.1
 	%{_sbindir}/update-alternatives --remove pgsql-reindexdb	%{pgbaseinstdir}/bin/reindexdb
-	%{_sbindir}/update-alternatives --remove pgsql-reindexdbman	%{pgbaseinstdir}/share/man/man1/reindexdb.1
+#	%{_sbindir}/update-alternatives --remove pgsql-reindexdbman	%{pgbaseinstdir}/share/man/man1/reindexdb.1
 	%{_sbindir}/update-alternatives --remove pgsql-vacuumdb		%{pgbaseinstdir}/bin/vacuumdb
-	%{_sbindir}/update-alternatives --remove pgsql-vacuumdbman	%{pgbaseinstdir}/share/man/man1/vacuumdb.1
+#	%{_sbindir}/update-alternatives --remove pgsql-vacuumdbman	%{pgbaseinstdir}/share/man/man1/vacuumdb.1
   fi
 
 %postun libs
@@ -1080,7 +1084,7 @@ fi
 %endif
 %doc doc/KNOWN_BUGS doc/MISSING_FEATURES
 %doc COPYRIGHT
-%doc README.rpm-dist
+#%doc README.rpm-dist
 %{pgbaseinstdir}/bin/clusterdb
 %{pgbaseinstdir}/bin/createdb
 %{pgbaseinstdir}/bin/createuser
@@ -1099,30 +1103,30 @@ fi
 %{pgbaseinstdir}/bin/reindexdb
 %{pgbaseinstdir}/bin/vacuumdb
 %{pgbaseinstdir}/share/errcodes.txt
-%{pgbaseinstdir}/share/man/man1/clusterdb.*
-%{pgbaseinstdir}/share/man/man1/createdb.*
-%{pgbaseinstdir}/share/man/man1/createuser.*
-%{pgbaseinstdir}/share/man/man1/dropdb.*
-%{pgbaseinstdir}/share/man/man1/dropuser.*
-%{pgbaseinstdir}/share/man/man1/pgbench.1
-%{pgbaseinstdir}/share/man/man1/pg_basebackup.*
-%{pgbaseinstdir}/share/man/man1/pg_config.*
-%{pgbaseinstdir}/share/man/man1/pg_dump.*
-%{pgbaseinstdir}/share/man/man1/pg_dumpall.*
-%{pgbaseinstdir}/share/man/man1/pg_isready.*
-%{pgbaseinstdir}/share/man/man1/pg_restore.*
-%{pgbaseinstdir}/share/man/man1/psql.*
-%{pgbaseinstdir}/share/man/man1/reindexdb.*
-%{pgbaseinstdir}/share/man/man1/vacuumdb.*
-%{pgbaseinstdir}/share/man/man3/*
-%{pgbaseinstdir}/share/man/man7/*
-
-%files docs
-%defattr(-,root,root)
-%doc doc/src/*
-%doc *-A4.pdf
-%doc src/tutorial
-%doc doc/html
+#%{pgbaseinstdir}/share/man/man1/clusterdb.*
+#%{pgbaseinstdir}/share/man/man1/createdb.*
+#%{pgbaseinstdir}/share/man/man1/createuser.*
+#%{pgbaseinstdir}/share/man/man1/dropdb.*
+#%{pgbaseinstdir}/share/man/man1/dropuser.*
+#%{pgbaseinstdir}/share/man/man1/pgbench.1
+#%{pgbaseinstdir}/share/man/man1/pg_basebackup.*
+#%{pgbaseinstdir}/share/man/man1/pg_config.*
+#%{pgbaseinstdir}/share/man/man1/pg_dump.*
+#%{pgbaseinstdir}/share/man/man1/pg_dumpall.*
+#%{pgbaseinstdir}/share/man/man1/pg_isready.*
+#%{pgbaseinstdir}/share/man/man1/pg_restore.*
+#%{pgbaseinstdir}/share/man/man1/psql.*
+#%{pgbaseinstdir}/share/man/man1/reindexdb.*
+#%{pgbaseinstdir}/share/man/man1/vacuumdb.*
+#%{pgbaseinstdir}/share/man/man3/*
+#%{pgbaseinstdir}/share/man/man7/*
+#
+#%files docs
+#%defattr(-,root,root)
+#%doc doc/src/*
+#%doc *-A4.pdf
+#%doc src/tutorial
+#%doc doc/html
 
 %files contrib -f pg_contrib.lst
 %defattr(-,root,root)
@@ -1160,6 +1164,7 @@ fi
 %{pgbaseinstdir}/lib/ltree.so
 %{pgbaseinstdir}/lib/moddatetime.so
 %{pgbaseinstdir}/lib/old_snapshot.so
+%{pgbaseinstdir}/lib/orioledb.so
 %{pgbaseinstdir}/lib/pageinspect.so
 %{pgbaseinstdir}/lib/passwordcheck.so
 %{pgbaseinstdir}/lib/pgcrypto.so
@@ -1221,6 +1226,7 @@ fi
 %{pgbaseinstdir}/share/extension/ltree.control
 %{pgbaseinstdir}/share/extension/ltree--*.sql
 %{pgbaseinstdir}/share/extension/moddatetime*
+%{pgbaseinstdir}/share/extension/orioledb*
 %{pgbaseinstdir}/share/extension/old_snapshot*
 %{pgbaseinstdir}/share/extension/pageinspect*
 %{pgbaseinstdir}/share/extension/pg_buffercache*
@@ -1254,10 +1260,10 @@ fi
 %{pgbaseinstdir}/bin/pg_amcheck
 %{pgbaseinstdir}/bin/pg_recvlogical
 %{pgbaseinstdir}/bin/vacuumlo
-%{pgbaseinstdir}/share/man/man1/pg_amcheck.1
-%{pgbaseinstdir}/share/man/man1/oid2name.1
-%{pgbaseinstdir}/share/man/man1/pg_recvlogical.1
-%{pgbaseinstdir}/share/man/man1/vacuumlo.1
+#%{pgbaseinstdir}/share/man/man1/pg_amcheck.1
+#%{pgbaseinstdir}/share/man/man1/oid2name.1
+#%{pgbaseinstdir}/share/man/man1/pg_recvlogical.1
+#%{pgbaseinstdir}/share/man/man1/vacuumlo.1
 
 %files libs -f pg_libpq5.lst
 %defattr(-,root,root)
@@ -1294,21 +1300,21 @@ fi
 %{pgbaseinstdir}/bin/pg_verifybackup
 %{pgbaseinstdir}/bin/postgres
 %{pgbaseinstdir}/bin/postmaster
-%{pgbaseinstdir}/share/man/man1/initdb.*
-%{pgbaseinstdir}/share/man/man1/pg_archivecleanup.1
-%{pgbaseinstdir}/share/man/man1/pg_checksums.*
-%{pgbaseinstdir}/share/man/man1/pg_controldata.*
-%{pgbaseinstdir}/share/man/man1/pg_ctl.*
-%{pgbaseinstdir}/share/man/man1/pg_resetwal.*
-%{pgbaseinstdir}/share/man/man1/pg_receivewal.*
-%{pgbaseinstdir}/share/man/man1/pg_rewind.1
-%{pgbaseinstdir}/share/man/man1/pg_test_fsync.1
-%{pgbaseinstdir}/share/man/man1/pg_test_timing.1
-%{pgbaseinstdir}/share/man/man1/pg_upgrade.1
-%{pgbaseinstdir}/share/man/man1/pg_verifybackup.*
-%{pgbaseinstdir}/share/man/man1/pg_waldump.1
-%{pgbaseinstdir}/share/man/man1/postgres.*
-%{pgbaseinstdir}/share/man/man1/postmaster.*
+#%{pgbaseinstdir}/share/man/man1/initdb.*
+#%{pgbaseinstdir}/share/man/man1/pg_archivecleanup.1
+#%{pgbaseinstdir}/share/man/man1/pg_checksums.*
+#%{pgbaseinstdir}/share/man/man1/pg_controldata.*
+#%{pgbaseinstdir}/share/man/man1/pg_ctl.*
+#%{pgbaseinstdir}/share/man/man1/pg_resetwal.*
+#%{pgbaseinstdir}/share/man/man1/pg_receivewal.*
+#%{pgbaseinstdir}/share/man/man1/pg_rewind.1
+#%{pgbaseinstdir}/share/man/man1/pg_test_fsync.1
+#%{pgbaseinstdir}/share/man/man1/pg_test_timing.1
+#%{pgbaseinstdir}/share/man/man1/pg_upgrade.1
+#%{pgbaseinstdir}/share/man/man1/pg_verifybackup.*
+#%{pgbaseinstdir}/share/man/man1/pg_waldump.1
+#%{pgbaseinstdir}/share/man/man1/postgres.*
+#%{pgbaseinstdir}/share/man/man1/postmaster.*
 %{pgbaseinstdir}/share/postgres.bki
 %{pgbaseinstdir}/share/system_constraints.sql
 %{pgbaseinstdir}/share/system_functions.sql
@@ -1360,7 +1366,7 @@ fi
 %{pgbaseinstdir}/lib/libpgtypes.a
 %{pgbaseinstdir}/lib/pgxs/*
 %{pgbaseinstdir}/lib/pkgconfig/*
-%{pgbaseinstdir}/share/man/man1/ecpg.*
+#%{pgbaseinstdir}/share/man/man1/ecpg.*
 
 %if %llvm
 %files llvmjit
