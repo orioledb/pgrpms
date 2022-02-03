@@ -638,6 +638,9 @@ export PYTHON=/usr/bin/python3
 %endif
 
 # These configure options must match main build
+%if %beta
+CFLAGS="-O0" \
+%endif
 ./configure --enable-rpath \
 	--prefix=%{pgbaseinstdir} \
 	--includedir=%{pgbaseinstdir}/include \

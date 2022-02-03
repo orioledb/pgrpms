@@ -73,6 +73,17 @@ nosignbuild14: bfnosignsrpm14
 	--define "pgmajorversion 14" --define "pginstdir /usr/pgsql-14" --define "pgpackageversion 14" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
 
+nosignbuild14-debug: bfnosignsrpm14
+	rpmbuild --define "_sourcedir $(PWD)" \
+	--define "_specdir $(PWD)" \
+	--define  "_builddir $(HOME)/rpm14/BUILD" \
+	--define "_buildrootdir $(HOME)/rpm14/BUILDROOT" \
+	--define "_srcrpmdir $(HOME)/rpm14/SRPMS" \
+	--define "_rpmdir $(HOME)/rpm14/RPMS/" \
+	--define "pgmajorversion 14" --define "pginstdir /usr/pgsql-14" --define "pgpackageversion 14" \
+	--define "dist $(DIST)" -bb $(SPECFILE) \
+	--define "beta 1" \
+
 noprepbuild14:
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
 	--define "_builddir ." --define "_srcrpmdir $(HOME)/rpm14/SRPMS" \
