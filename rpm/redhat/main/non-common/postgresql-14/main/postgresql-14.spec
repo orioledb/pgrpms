@@ -119,6 +119,10 @@ BuildRequires:	perl glibc-devel bison flex >= 2.5.31
 BuildRequires:	perl(ExtUtils::MakeMaker)
 BuildRequires:	readline-devel zlib-devel >= 1.0.4 pgdg-srpm-macros
 
+# zstd dependency
+BuildRequires:	libzstd-devel
+Requires:	libzstd
+
 # lz4 dependency
 %if 0%{?suse_version} >= 1315 && 0%{?suse_version} <= 1499
 BuildRequires:	liblz4-devel
