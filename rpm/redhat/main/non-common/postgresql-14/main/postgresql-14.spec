@@ -731,6 +731,7 @@ sed "s|C=\`pwd\`;|C=%{pgbaseinstdir}/lib/tutorial;|" < src/tutorial/Makefile > s
 
 MAKELEVEL=0 %{__make} %{?_smp_mflags} all
 %{__make} %{?_smp_mflags} -C contrib all
+%{__make} %{?_smp_mflags} -C contrib/orioledb all
 %if %uuid
 %{__make} %{?_smp_mflags} -C contrib/uuid-ossp all
 %endif
@@ -766,6 +767,7 @@ run_testsuite()
 	run_testsuite "src/pl/plpython"
 %endif
 	run_testsuite "contrib"
+	run_testsuite "contrib/orioledb"
 %endif
 
 %if %test
@@ -789,6 +791,7 @@ run_testsuite()
 
 %{__mkdir} -p %{buildroot}%{pgbaseinstdir}/share/extensions/
 %{__make} -C contrib DESTDIR=%{buildroot} install
+%{__make} -C contrib/orioledb DESTDIR=%{buildroot} install
 %if %uuid
 %{__make} -C contrib/uuid-ossp DESTDIR=%{buildroot} install
 %endif
