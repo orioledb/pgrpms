@@ -19,8 +19,6 @@
 
 prep13:
 	if [ -f dead.package ]; then echo "This package is marked as dead. Build won't continue"; exit 1; fi
-	# Update spec file, patches, etc, before running spectool:
-	git pull
 	# Use spectool to download source files, especially tarballs.
 	spectool -g -S --define "pgmajorversion 13" --define "pginstdir /usr/pgsql-13" --define "pgpackageversion 13" $(SPECFILE)
 
@@ -74,6 +72,17 @@ nosignbuild13: bfnosignsrpm13
 	--define "_rpmdir $(HOME)/rpm13/RPMS/" \
 	--define "pgmajorversion 13" --define "pginstdir /usr/pgsql-13" --define "pgpackageversion 13" \
 	--define "dist $(DIST)" -bb $(SPECFILE)
+
+nosignbuild13-debug: bfnosignsrpm13
+	rpmbuild --define "_sourcedir $(PWD)" \
+	--define "_specdir $(PWD)" \
+	--define  "_builddir $(HOME)/rpm13/BUILD" \
+	--define "_buildrootdir $(HOME)/rpm13/BUILDROOT" \
+	--define "_srcrpmdir $(HOME)/rpm13/SRPMS" \
+	--define "_rpmdir $(HOME)/rpm13/RPMS/" \
+	--define "pgmajorversion 13" --define "pginstdir /usr/pgsql-13" --define "pgpackageversion 13" \
+	--define "dist $(DIST)" -bb $(SPECFILE) \
+	--define "beta 1" \
 
 noprepbuild13:
 	rpmbuild --define "_sourcedir ." --define "_specdir ." \
